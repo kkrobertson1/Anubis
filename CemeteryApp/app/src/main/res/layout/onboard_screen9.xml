@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:layout_marginVertical="10dp"
+                app:cardBackgroundColor="@color/purple_500"
+                app:cardCornerRadius="20dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    app:cardBackgroundColor="@color/purple_500"
+                    app:cardCornerRadius="20dp">
+
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white"
+                        android:src="@drawable/ic_onboard_eight" />
+                </androidx.cardview.widget.CardView>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:text="Now that you have found the gravesite location on your phone . It is best to zoom in on the location to improve your accuracy. Once you have zoomed in on that area. Press closest to the G-23 area gravesite until you see a red dot that looks like a balloon. Once you are done just select start and you will be mapped to that location from your current position. ANUBIS will take you as close to the gravesite as the road allows. You will than be guided by foot until you reach your selected area. From their you will be able to use the cemetery markers to find their gravesite. Note* cemetery makers varies from cemetery to cemetery. Some have location markers that make it easier to find your gravesite while others not so much. With the correct information ANUBIS can get you within feet of your grave site regardless of how difficult it may be. Even when there are no tombstone or marker on their gravesite."
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:visibility="visible" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

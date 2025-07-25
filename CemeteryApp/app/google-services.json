@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "956990698334",
+    "firebase_url": "https://properties-76893.firebaseio.com",
+    "project_id": "properties-76893",
+    "storage_bucket": "properties-76893.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:956990698334:android:536dbf99d161d6c56015cf",
+        "android_client_info": {
+          "package_name": "com.ab.cemeteryapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "956990698334-56hsaiqe1us844agjrdnij54ocn3e2vk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ab.cemeteryapplication",
+            "certificate_hash": "0ac3955a9297aab6a1413eae6a348630bae0ff4c"
+          }
+        },
+        {
+          "client_id": "956990698334-lcmiulg2q3qhpahpm967s67ifp48qeci.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYwD5ipMne4jFFs4gtIlE6be-WCUlVWMc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "956990698334-lcmiulg2q3qhpahpm967s67ifp48qeci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
