@@ -412,13 +412,29 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             map.setInfoWindowAdapter(CustomInfoWindowAdapter(this, point, selectedState))
             false
         }
-        map.setOnInfoWindowClickListener { latlng ->
-            val point = latlng.position
-            val gmmIntentUri =
-                Uri.parse("https://www.google.com/maps/search/?api=1&query=${point.latitude},${point.longitude}")
-            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-            startActivity(mapIntent)
-            notSave = true
+        map.setOnInfoWindowClickListener { marker ->
+            val point = marker.position
+            val options = arrayOf("Open in Google Maps", "Save to ANUBIS Website")
+            android.app.AlertDialog.Builder(this)
+                .setTitle("Choose an action")
+                .setItems(options) { _, which ->
+                    when (which) {
+                        0 -> {
+                            val gmmIntentUri = Uri.parse(
+                                "https://www.google.com/maps/search/?api=1&query=${point.latitude},${point.longitude}"
+                            )
+                            startActivity(Intent(Intent.ACTION_VIEW, gmmIntentUri))
+                            notSave = true
+                        }
+                        1 -> {
+                            val url = "https://anubis-platform.vercel.app/dashboard/gravesite/new" +
+                                "?lat=${point.latitude}&lng=${point.longitude}"
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                            notSave = true
+                        }
+                    }
+                }
+                .show()
         }
         if(gravesList.isNotEmpty()){
             if (gravesList.size > 1) {

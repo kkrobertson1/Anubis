@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import com.ab.cemeteryapplication.R
 import com.google.android.libraries.maps.GoogleMap
 import com.google.android.libraries.maps.model.LatLng
@@ -41,12 +40,7 @@ class CustomInfoWindowAdapter(context: Context, latLng: LatLng, state: String) :
             state.setText(mstate)
         }
 
-        link.setOnClickListener {
-            Toast.makeText(mContext, "Link", Toast.LENGTH_SHORT).show()
-//            val gmmIntentUri = Uri.parse("google.streetview:cbll=46.414382,10.013988")
-//            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-//            startActivity(mapIntent)
-        }
+        link.setText("Tap for options →")
     }
 
     override fun getInfoWindow(p0: Marker): View? {
