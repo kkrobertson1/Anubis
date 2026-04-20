@@ -427,7 +427,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                             notSave = true
                         }
                         1 -> {
-                            val url = "https://anubis-platform.vercel.app/dashboard/gravesite/new" +
+                            val url = "https://www.anubiskemet2.com/dashboard/gravesite/new" +
                                 "?lat=${point.latitude}&lng=${point.longitude}"
                             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                             notSave = true
