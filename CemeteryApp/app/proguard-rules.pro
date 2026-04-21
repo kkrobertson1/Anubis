@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class com.ab.cemeteryapplication.** { *; }
+-keep class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator *;
+}

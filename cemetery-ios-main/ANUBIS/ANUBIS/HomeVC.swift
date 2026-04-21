@@ -15,7 +15,7 @@ class HomeVC: UIViewController {
     @IBOutlet weak var stateButton: UIButton!
     @IBOutlet weak var cemeteryButton: UIButton!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    var bannerView: GADBannerView!
+    var bannerView: BannerView!
     
     var selectedState: String?
     var selectedCemetery: String?
@@ -29,12 +29,12 @@ class HomeVC: UIViewController {
         mapView.mapType = .satellite
         mapView.delegate = self
         
-        bannerView = GADBannerView(adSize: kGADAdSizeBanner)
+        bannerView = BannerView(adSize: AdSizeBanner)
         bannerView.rootViewController = self
         bannerView.isHidden = true
 //        bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
         bannerView.adUnitID = "ca-app-pub-2240572702544337/8585886043"
-        bannerView.load(GADRequest())
+        bannerView.load(Request())
         bannerView.delegate = self
         addBannerViewToView(bannerView)
         
@@ -42,15 +42,25 @@ class HomeVC: UIViewController {
         
     }
     
-    func addBannerViewToView(_ bannerView: GADBannerView) {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
+    func addBannerViewToView(_ bannerView: BannerView) {
         bannerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(bannerView)
         view.addConstraints(
             [NSLayoutConstraint(item: bannerView,
                                 attribute: .bottom,
                                 relatedBy: .equal,
-                                toItem: bottomLayoutGuide,
-                                attribute: .top,
+                                toItem: view.safeAreaLayoutGuide,
+                                attribute: .bottom,
                                 multiplier: 1,
                                 constant: 0),
              NSLayoutConstraint(item: bannerView,
@@ -106,7 +116,6 @@ class HomeVC: UIViewController {
     }
     
     @IBAction func onSelectState() {
-        
         showLoading()
         LiveData.shared.getState { stateList in
             self.hideLoading()
@@ -165,8 +174,8 @@ extension HomeVC : GMSMapViewDelegate {
         let infoView = MarkerInfoView(frame: CGRect(x: 0,y: 0,width: 200,height: 130))
         let grave = placeMarker.userData as! Grave
         
-        let link = NSAttributedString(string: "Tap for options →", attributes: [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue])
-
+        let link = NSAttributedString(string: "GPS - Click to GO", attributes: [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue])
+        
         infoView.label1.text = grave.cemetery
         infoView.label2.text = "Address: " + (grave.address ?? "")
         infoView.label3.text = "State: " + (grave.state ?? "")
@@ -181,49 +190,37 @@ extension HomeVC : GMSMapViewDelegate {
     }
     
     func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
-        let grave = marker.userData as! Grave
-        let lat = grave.latitude!
-        let lng = grave.longitude!
-
-        let sheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-
-        sheet.addAction(UIAlertAction(title: "Open in Google Maps", style: .default) { _ in
-            if UIApplication.shared.canOpenURL(URL(string: "comgooglemaps://")!) {
-                let url = "comgooglemaps://?q=\(lat),\(lng)&center=\(lat),\(lng)&zoom=18"
-                UIApplication.shared.open(URL(string: url)!, options: [:], completionHandler: nil)
-            } else if let url = URL(string: "https://www.google.com/maps/search/?api=1&query=\(lat),\(lng)") {
-                UIApplication.shared.open(url)
-            }
-        })
-
-        sheet.addAction(UIAlertAction(title: "Save to ANUBIS Website", style: .default) { _ in
-            if let url = URL(string: "https://anubis-platform.vercel.app/dashboard/gravesite/new?lat=\(lat)&lng=\(lng)") {
-                UIApplication.shared.open(url)
-            }
-        })
-
-        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-
-        // Required on iPad — action sheets need a source location for the popover
-        if let popover = sheet.popoverPresentationController {
-            popover.sourceView = self.view
-            popover.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
-            popover.permittedArrowDirections = []
-        }
-
-        present(sheet, animated: true)
+//        let grave = marker.userData as! Grave
+//        if (UIApplication.shared.canOpenURL(NSURL(string:"comgooglemaps://")! as URL)) {
+//            let url = "comgooglemaps://?q=\(grave.latitude!),\(grave.longitude!)&center=\(grave.latitude!),\(grave.longitude!)&zoom=18"
+//            UIApplication.shared.open(NSURL(string:url)! as URL, options: [:]) { (success) in }
+//        } else {
+//            NSLog("Can't use comgooglemaps://");
+//            print("Can't use comgooglemaps://")
+//            
+//            if let url = URL(string: "https://www.google.com/maps/search/?api=1&query=\(grave.latitude!),\(grave.longitude!)") {
+//                UIApplication.shared.open(url)
+//            } else {
+//                print("invalid url")
+//            }
+//        }
+        
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let newViewController = storyBoard.instantiateViewController(withIdentifier: "DestinationVC") as! DestinationVC
+        newViewController.destination = marker.position
+        navigationController?.pushViewController(newViewController, animated: true)
     }
 }
 
-extension HomeVC: GADBannerViewDelegate {
+extension HomeVC: BannerViewDelegate {
     
-    func bannerViewDidReceiveAd(_ bannerView: GADBannerView) {
+    func bannerViewDidReceiveAd(_ bannerView: BannerView) {
         bottomConstraint.constant = bannerView.frame.height
         bannerView.isHidden = false
         view.layoutIfNeeded()
     }
     
-    func bannerView(_ bannerView: GADBannerView, didFailToReceiveAdWithError error: Error) {
+    func bannerView(_ bannerView: BannerView, didFailToReceiveAdWithError error: Error) {
         bottomConstraint.constant = 0
         bannerView.isHidden = true
         view.layoutIfNeeded()

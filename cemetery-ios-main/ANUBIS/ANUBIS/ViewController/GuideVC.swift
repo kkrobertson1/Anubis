@@ -123,7 +123,7 @@ extension GuideVC {
     if paginationIndicator.currentPage == 10 {
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let newViewController = storyBoard.instantiateViewController(withIdentifier: "HomeVC") as! HomeVC
-        self.navigationController?.pushViewController(newViewController, animated: true)
+        self.navigationController?.pushViewController(newViewController, animated: false)
     }
     else{
         guard let currrentPage = self.pageController?.viewControllers?.first else { return }
@@ -140,7 +140,7 @@ extension GuideVC {
   
     let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
     let newViewController = storyBoard.instantiateViewController(withIdentifier: "HomeVC") as! HomeVC
-    self.navigationController?.pushViewController(newViewController, animated: true)
+    self.navigationController?.pushViewController(newViewController, animated: false)
 //    self.view .addSubview(bottomView)
 //    self.view .bringSubviewToFront(bottomView)
   }

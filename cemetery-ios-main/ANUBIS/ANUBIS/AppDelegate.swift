@@ -7,20 +7,20 @@
 
 import UIKit
 import CoreData
-import Firebase
+import FirebaseCore
 import GoogleMaps
 import GoogleMobileAds
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    let mapAPIKey = "AIzaSyAFTe4WeIIAZ5d6syxkk0ONzaNHkRz9MUw"
+    let mapAPIKey = "AIzaSyAqZMkKZID0CMXq5y8VqVeRja4DXCBTQes"
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         FirebaseApp.configure()
         GMSServices.provideAPIKey(mapAPIKey)
-        GADMobileAds.sharedInstance().start(completionHandler: nil)
+        MobileAds.shared.start()
         
         return true
     }

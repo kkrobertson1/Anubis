@@ -15,47 +15,47 @@ import android.widget.TextView;
 
 import com.ab.cemeteryapplication.R;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 
 public class SpinnerDialog {
-    ArrayList<String> items;
+    public List<String> items;
     Activity context;
-    String dTitle,closeTitle="Close";
+    String dTitle, closeTitle = "Close";
     OnSpinerItemClick onSpinerItemClick;
     AlertDialog alertDialog;
     int pos;
     int style;
-    boolean cancellable=false;
-    boolean showKeyboard=false;
+    boolean cancellable = false;
+    boolean showKeyboard = false;
 
-    public SpinnerDialog(Activity activity, ArrayList<String> items, String dialogTitle) {
+    public SpinnerDialog(Activity activity, List<String> items, String dialogTitle) {
         this.items = items;
         this.context = activity;
         this.dTitle = dialogTitle;
     }
 
-    public SpinnerDialog(Activity activity, ArrayList<String> items, String dialogTitle,String closeTitle) {
+    public SpinnerDialog(Activity activity, List<String> items, String dialogTitle, String closeTitle) {
         this.items = items;
         this.context = activity;
         this.dTitle = dialogTitle;
-        this.closeTitle=closeTitle;
+        this.closeTitle = closeTitle;
     }
 
-    public SpinnerDialog(Activity activity, ArrayList<String> items, String dialogTitle, int style) {
+    public SpinnerDialog(Activity activity, List<String> items, String dialogTitle, int style) {
         this.items = items;
         this.context = activity;
         this.dTitle = dialogTitle;
         this.style = style;
     }
 
-    public SpinnerDialog(Activity activity, ArrayList<String> items, String dialogTitle, int style,String closeTitle) {
+    public SpinnerDialog(Activity activity, List<String> items, String dialogTitle, int style, String closeTitle) {
         this.items = items;
         this.context = activity;
         this.dTitle = dialogTitle;
         this.style = style;
-        this.closeTitle=closeTitle;
+        this.closeTitle = closeTitle;
     }
 
     public void bindOnSpinerListener(OnSpinerItemClick onSpinerItemClick1) {
@@ -71,7 +71,7 @@ public class SpinnerDialog {
         title.setText(dTitle);
         final ListView listView = (ListView) v.findViewById(R.id.list);
         final EditText searchBox = (EditText) v.findViewById(R.id.searchBox);
-        if(isShowKeyboard()){
+        if (isShowKeyboard()) {
             showKeyboard(searchBox);
         }
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, R.layout.items_view, items);
@@ -129,7 +129,7 @@ public class SpinnerDialog {
         }
     }
 
-    private void hideKeyboard(){
+    private void hideKeyboard() {
         try {
             InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(context.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
@@ -137,15 +137,20 @@ public class SpinnerDialog {
         }
     }
 
-    private void showKeyboard(final EditText ettext){
+    private void showKeyboard(final EditText ettext) {
         ettext.requestFocus();
-        ettext.postDelayed(new Runnable(){
-                               @Override public void run(){
-                                   InputMethodManager keyboard=(InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                                   keyboard.showSoftInput(ettext,0);
+        ettext.postDelayed(new Runnable() {
+                               @Override
+                               public void run() {
+                                   InputMethodManager keyboard = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                   keyboard.showSoftInput(ettext, 0);
                                }
                            }
-                ,200);
+                , 200);
+    }
+
+    public boolean isShowing() {
+        return alertDialog != null && alertDialog.isShowing();
     }
 
     private boolean isCancellable() {

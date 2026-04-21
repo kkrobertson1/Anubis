@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // navigate to home
             let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let newViewController = storyBoard.instantiateViewController(withIdentifier: "HomeVC") as! HomeVC
-            self.window?.rootViewController = newViewController
+            self.window?.rootViewController = UINavigationController(rootViewController: newViewController)
             self.window?.makeKeyAndVisible()
 
         } else {

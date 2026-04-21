@@ -24,7 +24,7 @@
 
                 <fragment
                     android:id="@+id/map"
-                    android:name="com.google.android.libraries.maps.SupportMapFragment"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
@@ -71,7 +71,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center_vertical|center"
-                                android:text="Select State"
+                                android:text="@string/select_state"
                                 android:textAlignment="center"
                                 android:textSize="14sp" />
 
@@ -88,7 +88,7 @@
                                 android:id="@+id/cemetery"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:text="Select Cemetery"
+                                android:text="@string/select_cemetery"
                                 android:gravity="center_vertical|center"
                                 android:textAlignment="center"
                                 android:textSize="14sp" />

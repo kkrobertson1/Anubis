@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginHorizontal="40dp"
+    android:background="@drawable/custom_info_bg"
     android:clickable="true"
     android:focusable="true"
-    android:background="@drawable/custom_info_bg"
     android:orientation="vertical">
 
     <TextView
@@ -78,7 +78,7 @@
         android:layout_margin="10dp"
         android:text="@string/go"
         android:textAlignment="center"
-        android:textColor="@color/maps_qu_google_blue_500" />
+        android:textColor="@color/blue" />
 
 
 </LinearLayout>

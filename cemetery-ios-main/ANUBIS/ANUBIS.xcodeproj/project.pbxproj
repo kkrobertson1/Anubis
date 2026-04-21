@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -28,7 +28,14 @@
 		3758A328261736C2000CEEE5 /* ActivityIndecator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3758A327261736C2000CEEE5 /* ActivityIndecator.swift */; };
 		3758A32B261740CE000CEEE5 /* Picker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3758A32A261740CE000CEEE5 /* Picker.swift */; };
 		37A84642261C59AC00681BF3 /* MarkerInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A84641261C59AC00681BF3 /* MarkerInfoView.swift */; };
-		D08F29D59698A40FC14CCBA5 /* Pods_ANUBIS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE4400B8A5F49FD6A36B95D7 /* Pods_ANUBIS.framework */; };
+		3B337F2D2F1DFE8E0046B1F9 /* DestinationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B337F2C2F1DFE8E0046B1F9 /* DestinationVC.swift */; };
+		3B77539F2F1E72DA00EDBED0 /* GoogleNavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 3B77539E2F1E72DA00EDBED0 /* GoogleNavigation */; };
+		3B7753A12F1E752E00EDBED0 /* BasicNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7753A02F1E752E00EDBED0 /* BasicNavigationViewController.swift */; };
+		3B9A10122F1CB1800008171A /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 3B9A10112F1CB1800008171A /* FirebaseAnalytics */; };
+		3B9A10142F1CB1800008171A /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 3B9A10132F1CB1800008171A /* FirebaseCrashlytics */; };
+		3B9A10162F1CB1800008171A /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 3B9A10152F1CB1800008171A /* FirebaseDatabase */; };
+		3B9A10192F1CB21B0008171A /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 3B9A10182F1CB21B0008171A /* GoogleMaps */; };
+		3B9A101C2F1CB2590008171A /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 3B9A101B2F1CB2590008171A /* GoogleMobileAds */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,9 +62,8 @@
 		3758A327261736C2000CEEE5 /* ActivityIndecator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndecator.swift; sourceTree = "<group>"; };
 		3758A32A261740CE000CEEE5 /* Picker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Picker.swift; sourceTree = "<group>"; };
 		37A84641261C59AC00681BF3 /* MarkerInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkerInfoView.swift; sourceTree = "<group>"; };
-		4AF55F6613CA5BB3D0CC7661 /* Pods-ANUBIS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ANUBIS.release.xcconfig"; path = "Target Support Files/Pods-ANUBIS/Pods-ANUBIS.release.xcconfig"; sourceTree = "<group>"; };
-		CE4400B8A5F49FD6A36B95D7 /* Pods_ANUBIS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ANUBIS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E19BC4CE4F1D71077C802941 /* Pods-ANUBIS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ANUBIS.debug.xcconfig"; path = "Target Support Files/Pods-ANUBIS/Pods-ANUBIS.debug.xcconfig"; sourceTree = "<group>"; };
+		3B337F2C2F1DFE8E0046B1F9 /* DestinationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationVC.swift; sourceTree = "<group>"; };
+		3B7753A02F1E752E00EDBED0 /* BasicNavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicNavigationViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,21 +71,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D08F29D59698A40FC14CCBA5 /* Pods_ANUBIS.framework in Frameworks */,
+				3B9A10192F1CB21B0008171A /* GoogleMaps in Frameworks */,
+				3B9A10162F1CB1800008171A /* FirebaseDatabase in Frameworks */,
+				3B9A101C2F1CB2590008171A /* GoogleMobileAds in Frameworks */,
+				3B77539F2F1E72DA00EDBED0 /* GoogleNavigation in Frameworks */,
+				3B9A10122F1CB1800008171A /* FirebaseAnalytics in Frameworks */,
+				3B9A10142F1CB1800008171A /* FirebaseCrashlytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0EB89CB1BE336882A0C6A8CD /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				CE4400B8A5F49FD6A36B95D7 /* Pods_ANUBIS.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		11239F1826F4652000D5B0AC /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -111,8 +114,6 @@
 			children = (
 				3758A2D22616F97B000CEEE5 /* ANUBIS */,
 				3758A2D12616F97B000CEEE5 /* Products */,
-				D0C705856AA49BFA78B336E6 /* Pods */,
-				0EB89CB1BE336882A0C6A8CD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -133,7 +134,9 @@
 				3758A31B26170599000CEEE5 /* utils */,
 				3758A2D32616F97C000CEEE5 /* AppDelegate.swift */,
 				3758A2D52616F97C000CEEE5 /* SceneDelegate.swift */,
+				3B337F2C2F1DFE8E0046B1F9 /* DestinationVC.swift */,
 				3758A2D72616F97C000CEEE5 /* HomeVC.swift */,
+				3B7753A02F1E752E00EDBED0 /* BasicNavigationViewController.swift */,
 				3758A2D92616F97C000CEEE5 /* Main.storyboard */,
 				3758A3082616FF8A000CEEE5 /* GoogleService-Info.plist */,
 				3758A2DF2616F981000CEEE5 /* Assets.xcassets */,
@@ -167,15 +170,6 @@
 			path = marker;
 			sourceTree = "<group>";
 		};
-		D0C705856AA49BFA78B336E6 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				E19BC4CE4F1D71077C802941 /* Pods-ANUBIS.debug.xcconfig */,
-				4AF55F6613CA5BB3D0CC7661 /* Pods-ANUBIS.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -183,13 +177,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3758A2E72616F981000CEEE5 /* Build configuration list for PBXNativeTarget "ANUBIS" */;
 			buildPhases = (
-				7CE33C69F3730320CEB5D896 /* [CP] Check Pods Manifest.lock */,
 				3758A2CC2616F97B000CEEE5 /* Sources */,
 				3758A2CD2616F97B000CEEE5 /* Frameworks */,
 				3758A2CE2616F97B000CEEE5 /* Resources */,
-				18C59B86E79705877EABF146 /* [CP] Embed Pods Frameworks */,
-				98F35A91C056BCF4527E3F9A /* [CP] Copy Pods Resources */,
-				37A3F200261EEE730004BA92 /* ShellScript */,
+				3B9A101D2F1CB6210008171A /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -223,6 +214,12 @@
 				Base,
 			);
 			mainGroup = 3758A2C72616F97B000CEEE5;
+			packageReferences = (
+				3B9A10102F1CB1800008171A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				3B9A10172F1CB21B0008171A /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
+				3B9A101A2F1CB2590008171A /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				3B77539D2F1E72DA00EDBED0 /* XCRemoteSwiftPackageReference "ios-navigation-sdk" */,
+			);
 			productRefGroup = 3758A2D12616F97B000CEEE5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -250,24 +247,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		18C59B86E79705877EABF146 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ANUBIS/Pods-ANUBIS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ANUBIS/Pods-ANUBIS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ANUBIS/Pods-ANUBIS-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		37A3F200261EEE730004BA92 /* ShellScript */ = {
+		3B9A101D2F1CB6210008171A /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -275,8 +255,11 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
-				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
 			);
 			outputFileListPaths = (
 			);
@@ -284,46 +267,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
-		};
-		7CE33C69F3730320CEB5D896 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ANUBIS-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		98F35A91C056BCF4527E3F9A /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ANUBIS/Pods-ANUBIS-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ANUBIS/Pods-ANUBIS-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ANUBIS/Pods-ANUBIS-resources.sh\"\n";
-			showEnvVarsInLog = 0;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -332,12 +276,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B337F2D2F1DFE8E0046B1F9 /* DestinationVC.swift in Sources */,
 				37A84642261C59AC00681BF3 /* MarkerInfoView.swift in Sources */,
 				3758A328261736C2000CEEE5 /* ActivityIndecator.swift in Sources */,
 				3758A32426172927000CEEE5 /* LiveData.swift in Sources */,
 				11239F1C26F4652000D5B0AC /* GuideVC.swift in Sources */,
 				11F14B0F28C9BBB0004A1B33 /* JSONReader.swift in Sources */,
 				3758A31D261705A7000CEEE5 /* Extensions.swift in Sources */,
+				3B7753A12F1E752E00EDBED0 /* BasicNavigationViewController.swift in Sources */,
 				3758A321261717AA000CEEE5 /* SelectionVC.swift in Sources */,
 				3758A2D82616F97C000CEEE5 /* HomeVC.swift in Sources */,
 				3758A2DE2616F97C000CEEE5 /* ANUBIS.xcdatamodeld in Sources */,
@@ -489,20 +435,22 @@
 		};
 		3758A2E82616F981000CEEE5 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E19BC4CE4F1D71077C802941 /* Pods-ANUBIS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 5;
-				DEVELOPMENT_TEAM = AD6ZM83Z3U;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ANUBIS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ab.ANUBIS1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -510,20 +458,22 @@
 		};
 		3758A2E92616F981000CEEE5 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4AF55F6613CA5BB3D0CC7661 /* Pods-ANUBIS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 5;
-				DEVELOPMENT_TEAM = AD6ZM83Z3U;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = ANUBIS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ab.ANUBIS1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -551,6 +501,74 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3B77539D2F1E72DA00EDBED0 /* XCRemoteSwiftPackageReference "ios-navigation-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-navigation-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.7.0;
+			};
+		};
+		3B9A10102F1CB1800008171A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.8.0;
+			};
+		};
+		3B9A10172F1CB21B0008171A /* XCRemoteSwiftPackageReference "ios-maps-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-maps-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.7.0;
+			};
+		};
+		3B9A101A2F1CB2590008171A /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.14.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3B77539E2F1E72DA00EDBED0 /* GoogleNavigation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B77539D2F1E72DA00EDBED0 /* XCRemoteSwiftPackageReference "ios-navigation-sdk" */;
+			productName = GoogleNavigation;
+		};
+		3B9A10112F1CB1800008171A /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B9A10102F1CB1800008171A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		3B9A10132F1CB1800008171A /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B9A10102F1CB1800008171A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+		3B9A10152F1CB1800008171A /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B9A10102F1CB1800008171A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		3B9A10182F1CB21B0008171A /* GoogleMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B9A10172F1CB21B0008171A /* XCRemoteSwiftPackageReference "ios-maps-sdk" */;
+			productName = GoogleMaps;
+		};
+		3B9A101B2F1CB2590008171A /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B9A101A2F1CB2590008171A /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		3758A2DC2616F97C000CEEE5 /* ANUBIS.xcdatamodeld */ = {
