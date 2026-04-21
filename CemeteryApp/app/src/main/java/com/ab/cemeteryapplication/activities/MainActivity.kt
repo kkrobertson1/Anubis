@@ -1,12 +1,14 @@
 package com.ab.cemeteryapplication.activities
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.ab.cemeteryapplication.R
@@ -216,10 +218,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 return@setOnInfoWindowClickListener
             }
 
-            startActivity(
-                Intent(this, DestinationActivity::class.java)
-                    .putExtra(DestinationActivity.EXTRA_DEST, marker.position)
-            )
+            val options = arrayOf("Get Directions", "Save to ANUBIS Website")
+            AlertDialog.Builder(this)
+                .setTitle("Gravesite Options")
+                .setItems(options) { _, which ->
+                    when (which) {
+                        0 -> {
+                            startActivity(
+                                Intent(this, DestinationActivity::class.java)
+                                    .putExtra(DestinationActivity.EXTRA_DEST, marker.position)
+                            )
+                        }
+                        1 -> {
+                            val url = "https://www.anubiskemet2.com/dashboard/gravesite/new" +
+                                "?lat=${marker.position.latitude}&lng=${marker.position.longitude}"
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                        }
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
         }
         setGrave(mainViewModel.graves.value)
     }
