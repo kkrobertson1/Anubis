@@ -15,6 +15,19 @@ class DestinationVC: UIViewController {
     var destination: CLLocationCoordinate2D!
     var marker: GMSMarker!
     private let locationManager = CLLocationManager()
+    private lazy var saveButton: UIButton = {
+        let b = UIButton(type: .system)
+        b.translatesAutoresizingMaskIntoConstraints = false
+        b.setTitle("Save to ANUBIS Website", for: .normal)
+        b.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+        b.backgroundColor = UIColor(red: 0.79, green: 0.66, blue: 0.30, alpha: 1.0)
+        b.setTitleColor(.white, for: .normal)
+        b.layer.cornerRadius = 8
+        b.contentEdgeInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
+        b.addTarget(self, action: #selector(onSaveToAnubis), for: .touchUpInside)
+        return b
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
@@ -25,6 +38,39 @@ class DestinationVC: UIViewController {
             "lat/lng: (\(destination.latitude),\(destination.longitude))"
         marker.map = mapView
         mapView.moveCamera(GMSCameraUpdate.setTarget(destination, zoom: 16))
+
+        // Add Save to ANUBIS Website button above the bottom safe area
+        view.addSubview(saveButton)
+        NSLayoutConstraint.activate([
+            saveButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            saveButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+        ])
+    }
+
+    @objc private func onSaveToAnubis() {
+        // Request location permission if needed, then get current location
+        let status = locationManager.authorizationStatus
+        if status == .notDetermined {
+            locationManager.delegate = self
+            locationManager.requestWhenInUseAuthorization()
+            return
+        }
+        if status == .denied || status == .restricted {
+            showAlertDialog(style: .alert, title: "", message: "Location access is required to save your current gravesite location.")
+            return
+        }
+        guard let currentLocation = locationManager.location else {
+            locationManager.startUpdatingLocation()
+            showAlertDialog(style: .alert, title: "", message: "Getting your current location. Please wait a moment and try again.")
+            return
+        }
+        let lat = currentLocation.coordinate.latitude
+        let lng = currentLocation.coordinate.longitude
+        let urlString = "https://www.anubiskemet2.com/dashboard/gravesite/new?lat=\(lat)&lng=\(lng)"
+        if let url = URL(string: urlString) {
+            UIApplication.shared.open(url)
+        }
     }
 
     @IBAction func onStartGuidance() {

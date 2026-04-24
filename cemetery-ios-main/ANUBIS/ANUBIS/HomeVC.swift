@@ -174,7 +174,7 @@ extension HomeVC : GMSMapViewDelegate {
         let infoView = MarkerInfoView(frame: CGRect(x: 0,y: 0,width: 200,height: 130))
         let grave = placeMarker.userData as! Grave
         
-        let link = NSAttributedString(string: "Tap for options →", attributes: [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue])
+        let link = NSAttributedString(string: "GPS - Click to GO", attributes: [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue])
         
         infoView.label1.text = grave.cemetery
         infoView.label2.text = "Address: " + (grave.address ?? "")
@@ -190,38 +190,10 @@ extension HomeVC : GMSMapViewDelegate {
     }
     
     func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
-        let sheet = UIAlertController(
-            title: "Gravesite Options",
-            message: nil,
-            preferredStyle: .actionSheet
-        )
-
-        sheet.addAction(UIAlertAction(title: "Get Directions", style: .default) { _ in
-            let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-            let newViewController = storyBoard.instantiateViewController(withIdentifier: "DestinationVC") as! DestinationVC
-            newViewController.destination = marker.position
-            self.navigationController?.pushViewController(newViewController, animated: true)
-        })
-
-        sheet.addAction(UIAlertAction(title: "Save to ANUBIS Website", style: .default) { _ in
-            let urlString = "https://www.anubiskemet2.com/dashboard/gravesite/new" +
-                "?lat=\(marker.position.latitude)&lng=\(marker.position.longitude)"
-            if let url = URL(string: urlString) {
-                UIApplication.shared.open(url)
-            }
-        })
-
-        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-
-        // iPad popover support — anchor on the marker
-        if let popover = sheet.popoverPresentationController {
-            popover.sourceView = mapView
-            let point = mapView.projection.point(for: marker.position)
-            popover.sourceRect = CGRect(x: point.x, y: point.y, width: 0, height: 0)
-            popover.permittedArrowDirections = [.up, .down]
-        }
-
-        present(sheet, animated: true)
+        let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let newViewController = storyBoard.instantiateViewController(withIdentifier: "DestinationVC") as! DestinationVC
+        newViewController.destination = marker.position
+        navigationController?.pushViewController(newViewController, animated: true)
     }
 }
 

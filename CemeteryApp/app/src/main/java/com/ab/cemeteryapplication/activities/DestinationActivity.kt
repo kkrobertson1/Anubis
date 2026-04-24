@@ -3,12 +3,15 @@ package com.ab.cemeteryapplication.activities
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.IntentCompat
 import com.ab.cemeteryapplication.R
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -53,6 +56,44 @@ class DestinationActivity : AppCompatActivity() {
                         }
                     }
             )
+        }
+
+        findViewById<Button>(R.id.buttonSaveToAnubis).setOnClickListener {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                Toast.makeText(
+                    this,
+                    "Location permission is required to save your current gravesite location.",
+                    Toast.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
+
+            val fusedClient = LocationServices.getFusedLocationProviderClient(this)
+            fusedClient.lastLocation
+                .addOnSuccessListener { location ->
+                    if (location == null) {
+                        Toast.makeText(
+                            this,
+                            "Could not get your current location. Please try again.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return@addOnSuccessListener
+                    }
+                    val url = "https://www.anubiskemet2.com/dashboard/gravesite/new" +
+                        "?lat=${location.latitude}&lng=${location.longitude}"
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                }
+                .addOnFailureListener {
+                    Toast.makeText(
+                        this,
+                        "Failed to get current location: ${it.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
         }
 
         val mapDestination =
