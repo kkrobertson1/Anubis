@@ -18,12 +18,14 @@
 /// ANY KIND, either express or implied. See the License for the specific language governing
 /// permissions and limitations under the License.
 
+import CoreLocation
 import GoogleNavigation
 import UIKit
 
 class BasicNavigationViewController: UIViewController {
     var destination: CLLocationCoordinate2D!
     var travelMode = GMSNavigationTravelMode.driving
+    private let locationManager = CLLocationManager()
 
     private lazy var mapView: GMSMapView = {
         let mapView = GMSMapView()
@@ -41,10 +43,49 @@ class BasicNavigationViewController: UIViewController {
         mapView.navigator?.add(self)
         setupConstraints()
 
-//           mapView.locationSimulator?.simulateLocation(
-//            at: CLLocationCoordinate2D(latitude:37.799640034838895,longitude: -122.4622902939138))
+        // Add "Save to ANUBIS" button as a top-right navigation bar item
+        let saveButton = UIBarButtonItem(
+            title: "Save to ANUBIS",
+            style: .done,
+            target: self,
+            action: #selector(onSaveToAnubis)
+        )
+        saveButton.tintColor = UIColor(red: 0.79, green: 0.66, blue: 0.30, alpha: 1.0)
+        navigationItem.rightBarButtonItem = saveButton
+        navigationController?.setNavigationBarHidden(false, animated: false)
 
         requestRouteToCoordinate(destination)
+    }
+
+    @objc private func onSaveToAnubis() {
+        let status = locationManager.authorizationStatus
+        if status == .denied || status == .restricted {
+            let alert = UIAlertController(
+                title: "Location access required",
+                message: "Please enable location access in Settings to save your current gravesite location.",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(alert, animated: true)
+            return
+        }
+        guard let currentLocation = locationManager.location else {
+            locationManager.startUpdatingLocation()
+            let alert = UIAlertController(
+                title: "Getting your location...",
+                message: "Please wait a moment and try again.",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(alert, animated: true)
+            return
+        }
+        let lat = currentLocation.coordinate.latitude
+        let lng = currentLocation.coordinate.longitude
+        let urlString = "https://www.anubiskemet2.com/dashboard/gravesite/new?lat=\(lat)&lng=\(lng)"
+        if let url = URL(string: urlString) {
+            UIApplication.shared.open(url)
+        }
     }
 
     private func setupConstraints() {
@@ -108,6 +149,18 @@ extension BasicNavigationViewController: GMSNavigatorListener {
         _ navigator: GMSNavigator,
         didArriveAt waypoint: GMSNavigationWaypoint
     ) {
-        self.navigationController?.popViewController(animated: true)
+        // Stop guidance but keep the user on the navigation screen so they can
+        // walk around to find the exact gravesite, then tap "Save to ANUBIS"
+        // when they've reached it.
+        mapView.navigator?.isGuidanceActive = false
+        mapView.cameraMode = .free
+
+        let alert = UIAlertController(
+            title: "You've arrived",
+            message: "You've reached the cemetery. Walk to the exact gravesite, then tap \"Save to ANUBIS\" in the top-right to save that location to your account.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }
