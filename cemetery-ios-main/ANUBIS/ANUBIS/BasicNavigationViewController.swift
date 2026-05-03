@@ -26,6 +26,7 @@ class BasicNavigationViewController: UIViewController {
     var destination: CLLocationCoordinate2D!
     var travelMode = GMSNavigationTravelMode.driving
     private let locationManager = CLLocationManager()
+    private var currentCoord: CLLocationCoordinate2D?
 
     private lazy var mapView: GMSMapView = {
         let mapView = GMSMapView()
@@ -33,6 +34,20 @@ class BasicNavigationViewController: UIViewController {
         mapView.settings.compassButton = true
         mapView.translatesAutoresizingMaskIntoConstraints = false
         return mapView
+    }()
+
+    private lazy var coordsLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.textColor = .white
+        label.backgroundColor = UIColor.black.withAlphaComponent(0.75)
+        label.layer.cornerRadius = 8
+        label.layer.masksToBounds = true
+        label.text = "  📍 Acquiring location...  "
+        label.numberOfLines = 0
+        return label
     }()
 
     override func viewDidLoad() {
@@ -43,7 +58,24 @@ class BasicNavigationViewController: UIViewController {
         mapView.navigator?.add(self)
         setupConstraints()
 
-        // Add "Save to ANUBIS" button as a top-right navigation bar item
+        // Set up location manager for live coordinate updates
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+
+        // Show navigation bar with Done (left) and Save (right) buttons
+        navigationController?.setNavigationBarHidden(false, animated: false)
+        title = "Navigation"
+
+        let doneButton = UIBarButtonItem(
+            title: "Done",
+            style: .plain,
+            target: self,
+            action: #selector(onDone)
+        )
+        navigationItem.leftBarButtonItem = doneButton
+
         let saveButton = UIBarButtonItem(
             title: "Save to ANUBIS",
             style: .done,
@@ -52,9 +84,21 @@ class BasicNavigationViewController: UIViewController {
         )
         saveButton.tintColor = UIColor(red: 0.79, green: 0.66, blue: 0.30, alpha: 1.0)
         navigationItem.rightBarButtonItem = saveButton
-        navigationController?.setNavigationBarHidden(false, animated: false)
+
+        // Add live coordinate display at bottom of screen
+        view.addSubview(coordsLabel)
+        NSLayoutConstraint.activate([
+            coordsLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            coordsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            coordsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            coordsLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 36)
+        ])
 
         requestRouteToCoordinate(destination)
+    }
+
+    @objc private func onDone() {
+        navigationController?.popToRootViewController(animated: true)
     }
 
     @objc private func onSaveToAnubis() {
@@ -69,8 +113,8 @@ class BasicNavigationViewController: UIViewController {
             present(alert, animated: true)
             return
         }
-        guard let currentLocation = locationManager.location else {
-            locationManager.startUpdatingLocation()
+
+        guard let coord = currentCoord ?? locationManager.location?.coordinate else {
             let alert = UIAlertController(
                 title: "Getting your location...",
                 message: "Please wait a moment and try again.",
@@ -80,12 +124,36 @@ class BasicNavigationViewController: UIViewController {
             present(alert, animated: true)
             return
         }
-        let lat = currentLocation.coordinate.latitude
-        let lng = currentLocation.coordinate.longitude
-        let urlString = "https://www.anubiskemet2.com/dashboard/gravesite/new?lat=\(lat)&lng=\(lng)"
-        if let url = URL(string: urlString) {
-            UIApplication.shared.open(url)
-        }
+
+        showSaveDialog(coord: coord)
+    }
+
+    private func showSaveDialog(coord: CLLocationCoordinate2D) {
+        let formatted = String(format: "%.6f, %.6f", coord.latitude, coord.longitude)
+        let alert = UIAlertController(
+            title: "Save Gravesite Location",
+            message: "Current GPS coordinates:\n\n\(formatted)\n\nTap \"Save to Website\" to save this location to your account, or \"Refresh\" to get an updated GPS reading.",
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: "Save to Website", style: .default) { _ in
+            let urlString = "https://www.anubiskemet2.com/dashboard/gravesite/new?lat=\(coord.latitude)&lng=\(coord.longitude)"
+            if let url = URL(string: urlString) {
+                UIApplication.shared.open(url)
+            }
+        })
+
+        alert.addAction(UIAlertAction(title: "Refresh Location", style: .default) { [weak self] _ in
+            self?.locationManager.requestLocation()
+            // Re-open dialog with fresh coords after brief delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                self?.onSaveToAnubis()
+            }
+        })
+
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+        present(alert, animated: true)
     }
 
     private func setupConstraints() {
@@ -131,8 +199,7 @@ class BasicNavigationViewController: UIViewController {
         mapView.locationSimulator?.stopSimulation()
         mapView.navigator?.isGuidanceActive = false
         mapView.navigator?.clearDestinations()
-
-        navigationItem.rightBarButtonItem = nil
+        locationManager.stopUpdatingLocation()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -162,5 +229,24 @@ extension BasicNavigationViewController: GMSNavigatorListener {
         )
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
+    }
+}
+
+// MARK: - CLLocationManagerDelegate
+
+extension BasicNavigationViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let loc = locations.last else { return }
+        currentCoord = loc.coordinate
+        coordsLabel.text = String(
+            format: "  📍 Current: %.6f, %.6f  ",
+            loc.coordinate.latitude,
+            loc.coordinate.longitude
+        )
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        // Silent fail — we'll keep showing the last known coords
+        print("Location update failed: \(error.localizedDescription)")
     }
 }
