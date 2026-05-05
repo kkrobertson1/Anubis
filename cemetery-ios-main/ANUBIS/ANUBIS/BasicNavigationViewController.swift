@@ -64,17 +64,8 @@ class BasicNavigationViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
 
-        // Show navigation bar with Done (left) and Save (right) buttons
+        // Show navigation bar with the standard back button + Save button
         navigationController?.setNavigationBarHidden(false, animated: false)
-        title = "Navigation"
-
-        let doneButton = UIBarButtonItem(
-            title: "Done",
-            style: .plain,
-            target: self,
-            action: #selector(onDone)
-        )
-        navigationItem.leftBarButtonItem = doneButton
 
         let saveButton = UIBarButtonItem(
             title: "Save to ANUBIS",
@@ -95,10 +86,6 @@ class BasicNavigationViewController: UIViewController {
         ])
 
         requestRouteToCoordinate(destination)
-    }
-
-    @objc private func onDone() {
-        navigationController?.popToRootViewController(animated: true)
     }
 
     @objc private func onSaveToAnubis() {
