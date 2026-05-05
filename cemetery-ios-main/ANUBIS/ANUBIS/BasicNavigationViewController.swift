@@ -2,21 +2,6 @@
 //  BasicNavigationViewController.swift
 //  ANUBIS
 //
-//  Created by Mohammaduvez Payawala on 19/01/26.
-//
-
-/// Copyright 2020 Google LLC. All rights reserved.
-///
-///
-/// Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
-/// file except in compliance with the License. You may obtain a copy of the License at
-///
-///     http://www.apache.org/licenses/LICENSE-2.0
-///
-/// Unless required by applicable law or agreed to in writing, software distributed under
-/// the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
-/// ANY KIND, either express or implied. See the License for the specific language governing
-/// permissions and limitations under the License.
 
 import CoreLocation
 import GoogleNavigation
@@ -27,11 +12,13 @@ class BasicNavigationViewController: UIViewController {
     var travelMode = GMSNavigationTravelMode.driving
     private let locationManager = CLLocationManager()
     private var currentCoord: CLLocationCoordinate2D?
+    private var hasArrived = false
 
     private lazy var mapView: GMSMapView = {
         let mapView = GMSMapView()
         mapView.isNavigationEnabled = true
         mapView.settings.compassButton = true
+        mapView.settings.myLocationButton = true
         mapView.translatesAutoresizingMaskIntoConstraints = false
         return mapView
     }()
@@ -48,6 +35,24 @@ class BasicNavigationViewController: UIViewController {
         label.text = "  📍 Acquiring location...  "
         label.numberOfLines = 0
         return label
+    }()
+
+    private lazy var saveFloatingButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Save to ANUBIS Website", for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
+        button.backgroundColor = UIColor(red: 0.79, green: 0.66, blue: 0.30, alpha: 1.0)
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 12
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowOpacity = 0.3
+        button.layer.shadowRadius = 4
+        button.contentEdgeInsets = UIEdgeInsets(top: 14, left: 20, bottom: 14, right: 20)
+        button.addTarget(self, action: #selector(onSaveToAnubis), for: .touchUpInside)
+        button.isHidden = true  // Hidden until arrival
+        return button
     }()
 
     override func viewDidLoad() {
@@ -76,13 +81,21 @@ class BasicNavigationViewController: UIViewController {
         saveButton.tintColor = UIColor(red: 0.79, green: 0.66, blue: 0.30, alpha: 1.0)
         navigationItem.rightBarButtonItem = saveButton
 
-        // Add live coordinate display at bottom of screen
+        // Add live coordinate display at bottom
         view.addSubview(coordsLabel)
+        // Add the prominent save button just above the coords label
+        view.addSubview(saveFloatingButton)
+
         NSLayoutConstraint.activate([
             coordsLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             coordsLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             coordsLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            coordsLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 36)
+            coordsLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 36),
+
+            saveFloatingButton.bottomAnchor.constraint(equalTo: coordsLabel.topAnchor, constant: -12),
+            saveFloatingButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
+            saveFloatingButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
+            saveFloatingButton.heightAnchor.constraint(equalToConstant: 56),
         ])
 
         requestRouteToCoordinate(destination)
@@ -132,14 +145,12 @@ class BasicNavigationViewController: UIViewController {
 
         alert.addAction(UIAlertAction(title: "Refresh Location", style: .default) { [weak self] _ in
             self?.locationManager.requestLocation()
-            // Re-open dialog with fresh coords after brief delay
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 self?.onSaveToAnubis()
             }
         })
 
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-
         present(alert, animated: true)
     }
 
@@ -152,70 +163,69 @@ class BasicNavigationViewController: UIViewController {
         ])
     }
 
-    private func requestRouteToCoordinate(_ coordinate: CLLocationCoordinate2D)
-    {
-        // This force-unwrap is safe because GMSNavigationWaypoint initializer returns a valid non-nil
-        // object when a valid CLLocationCoordinate2D object is passed in. Validity of
-        // CLLocationCoordinate2D is ensured by its own initializer.
+    private func requestRouteToCoordinate(_ coordinate: CLLocationCoordinate2D) {
         let wayPoint = GMSNavigationMutableWaypoint(
             location: coordinate,
             title: "Destination Point"
         )!
         wayPoint.vehicleStopover = false
         let destinations = [wayPoint]
-        mapView.navigator?.setDestinations(destinations) {
-            [weak self] routeStatus in
-            guard let self = self else {
-                let alert = UIAlertController(
-                    title: "No route found",
-                    message: "No route found for the destination",
-                    preferredStyle: .alert
-                )
-                alert.addAction(UIAlertAction(title: "OK", style: .default))
-                self?.present(alert, animated: true, completion: nil)
-                return
-            }
+        mapView.navigator?.setDestinations(destinations) { [weak self] routeStatus in
+            guard let self = self else { return }
             self.mapView.navigator?.isGuidanceActive = true
-//            self.mapView.locationSimulator?
-//                .simulateLocationsAlongExistingRoute()
             self.mapView.cameraMode = .following
         }
     }
 
-    @objc private func stopNavigation() {
+    private func exitNavigationMode() {
+        // Fully release the Google Navigation SDK so the map is freely interactive,
+        // the navigation bar is no longer obscured by overlays, and the user can
+        // walk around to find the exact gravesite.
         mapView.locationSimulator?.stopSimulation()
         mapView.navigator?.isGuidanceActive = false
         mapView.navigator?.clearDestinations()
-        locationManager.stopUpdatingLocation()
+        mapView.isNavigationEnabled = false
+        mapView.cameraMode = .free
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        stopNavigation()
+        // Only fully tear down nav and stop location updates when leaving the screen
+        exitNavigationMode()
+        locationManager.stopUpdatingLocation()
     }
 }
 
 // MARK: - GMSNavigatorListener
 
 extension BasicNavigationViewController: GMSNavigatorListener {
+    func navigator(_ navigator: GMSNavigator, didArriveAt waypoint: GMSNavigationWaypoint) {
+        guard !hasArrived else { return }
+        hasArrived = true
 
-    func navigator(
-        _ navigator: GMSNavigator,
-        didArriveAt waypoint: GMSNavigationWaypoint
-    ) {
-        // Stop guidance but keep the user on the navigation screen so they can
-        // walk around to find the exact gravesite, then tap "Save to ANUBIS"
-        // when they've reached it.
-        mapView.navigator?.isGuidanceActive = false
-        mapView.cameraMode = .free
+        // Fully exit navigation mode so the map is free to pan/zoom and overlays
+        // no longer cover the navigation bar or block touches.
+        exitNavigationMode()
 
+        // Re-center the camera on the user's current location
+        if let coord = currentCoord ?? locationManager.location?.coordinate {
+            let camera = GMSCameraPosition(target: coord, zoom: 19)
+            mapView.animate(to: camera)
+        }
+
+        // Show the prominent on-screen Save button
+        saveFloatingButton.isHidden = false
+
+        // Brief, non-blocking notification — auto-dismisses in 3 seconds
         let alert = UIAlertController(
             title: "You've arrived",
-            message: "You've reached the cemetery. Walk to the exact gravesite, then tap \"Save to ANUBIS\" in the top-right to save that location to your account.",
+            message: "Walk to the exact gravesite, then tap \"Save to ANUBIS Website\" to save the location.",
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            alert.dismiss(animated: true)
+        }
     }
 }
 
@@ -233,7 +243,6 @@ extension BasicNavigationViewController: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        // Silent fail — we'll keep showing the last known coords
         print("Location update failed: \(error.localizedDescription)")
     }
 }
