@@ -26,6 +26,46 @@ class DestinationVC: UIViewController {
             "lat/lng: (\(destination.latitude),\(destination.longitude))"
         marker.map = mapView
         mapView.moveCamera(GMSCameraUpdate.setTarget(destination, zoom: 16))
+
+        // Add "Save to ANUBIS" button to the nav bar — captures current GPS
+        // and opens the ANUBIS website with those coordinates. Matches the
+        // Save button placement on the Android DestinationActivity.
+        let saveButton = UIBarButtonItem(
+            title: "Save to ANUBIS",
+            style: .done,
+            target: self,
+            action: #selector(onSaveToAnubis)
+        )
+        saveButton.tintColor = UIColor(red: 0.79, green: 0.66, blue: 0.30, alpha: 1.0)
+        navigationItem.rightBarButtonItem = saveButton
+
+        // Start receiving location updates so the save action has a current fix
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+
+    @objc private func onSaveToAnubis() {
+        let status = locationManager.authorizationStatus
+        if status == .denied || status == .restricted {
+            showAlertDialog(style: .alert, title: "", message: "Location access is required to save your current gravesite location. Please enable it in Settings.")
+            return
+        }
+        guard let coord = locationManager.location?.coordinate else {
+            locationManager.requestLocation()
+            showAlertDialog(style: .alert, title: "", message: "Getting your current location. Please wait a moment and try again.")
+            return
+        }
+        let urlString = "https://www.anubiskemet2.com/dashboard/gravesite/new?lat=\(coord.latitude)&lng=\(coord.longitude)"
+        if let url = URL(string: urlString) {
+            UIApplication.shared.open(url)
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        locationManager.stopUpdatingLocation()
     }
 
     @IBAction func onStartGuidance() {
