@@ -27,6 +27,10 @@ class DestinationVC: UIViewController {
         marker.map = mapView
         mapView.moveCamera(GMSCameraUpdate.setTarget(destination, zoom: 16))
 
+        // Show user's current location dot on map
+        mapView.isMyLocationEnabled = true
+        mapView.settings.myLocationButton = true
+
         // Add "Save to ANUBIS" button to the nav bar — captures current GPS
         // and opens the ANUBIS website with those coordinates. Matches the
         // Save button placement on the Android DestinationActivity.
@@ -39,11 +43,25 @@ class DestinationVC: UIViewController {
         saveButton.tintColor = UIColor(red: 0.79, green: 0.66, blue: 0.30, alpha: 1.0)
         navigationItem.rightBarButtonItem = saveButton
 
-        // Start receiving location updates so the save action has a current fix
+        // Configure location manager (one-time setup)
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // Make sure the navigation bar is visible so the Save button shows
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+        // Start (or resume) location updates every time this screen appears.
+        // This is critical: when the user pops back from navigation after arrival,
+        // we need fresh GPS data for the Save action to work correctly.
         locationManager.startUpdatingLocation()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        locationManager.stopUpdatingLocation()
     }
 
     @objc private func onSaveToAnubis() {
@@ -61,11 +79,6 @@ class DestinationVC: UIViewController {
         if let url = URL(string: urlString) {
             UIApplication.shared.open(url)
         }
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        locationManager.stopUpdatingLocation()
     }
 
     @IBAction func onStartGuidance() {
