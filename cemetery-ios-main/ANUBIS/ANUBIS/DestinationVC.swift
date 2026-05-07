@@ -43,9 +43,17 @@ class DestinationVC: UIViewController {
         saveButton.tintColor = UIColor(red: 0.79, green: 0.66, blue: 0.30, alpha: 1.0)
         navigationItem.rightBarButtonItem = saveButton
 
-        // Configure location manager (one-time setup)
-        locationManager.delegate = self
+        // Configure location manager (one-time setup).
+        // IMPORTANT: do NOT set the delegate here — the delegate is set only
+        // inside the Start Guidance flow (checkLocationStatusAndGotoNavigation)
+        // because the existing locationManagerDidChangeAuthorization callback
+        // is wired to auto-push the navigation screen. Setting the delegate
+        // here would cause the navigation screen to push automatically as
+        // soon as the user grants location permission, before they tap Start
+        // Guidance.
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        // Trigger the iOS permission prompt on first use so that location
+        // updates can start working when the user later taps Save to ANUBIS.
         locationManager.requestWhenInUseAuthorization()
     }
 
