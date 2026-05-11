@@ -29,6 +29,13 @@ class BasicNavigationViewController: UIViewController {
         requestRouteToCoordinate(destination)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // Ensure the standard back button is always visible during navigation
+        // so users always have a clear way to exit the navigation flow.
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             mapView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -69,7 +76,7 @@ class BasicNavigationViewController: UIViewController {
 
 extension BasicNavigationViewController: GMSNavigatorListener {
     func navigator(_ navigator: GMSNavigator, didArriveAt waypoint: GMSNavigationWaypoint) {
-        // Original Jan app behavior — pop back to the destination screen on arrival.
+        // Original Jan app behavior: pop back to the destination screen on arrival.
         // The user can then tap "Save to ANUBIS Website" on that screen to save their
         // current GPS location, matching the Android app integration pattern.
         self.navigationController?.popViewController(animated: true)
