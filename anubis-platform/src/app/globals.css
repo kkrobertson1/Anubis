@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Typography */
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-cormorant);
+
+  /* Brand Colors — Peaceful Slate Navy Palette */
+  --color-background: #0A0F1A;
+  --color-surface: #111827;
+  --color-surface-2: #0F1A2E;
+  --color-border: #1E2A3D;
+
+  --color-gold: #C9A84C;
+  --color-gold-light: #D4AF37;
+  --color-gold-muted: #8B6914;
+
+  --color-text-primary: #EDE8DC;
+  --color-text-secondary: #9CA3AF;
+  --color-text-muted: #4B5563;
+
+  --color-foreground: #EDE8DC;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0A0F1A;
+  color: #EDE8DC;
+  font-family: var(--font-inter), Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  letter-spacing: 0.02em;
+}
+
+/* Gold gradient utility */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #C9A84C 0%, #E8C97A 50%, #C9A84C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtle gold border glow */
+.gold-glow {
+  box-shadow: 0 0 24px rgba(201, 168, 76, 0.2);
+}
+
+/* Luxury card */
+.luxury-card {
+  background: #111827;
+  border: 1px solid #1E2A3D;
+  border-radius: 4px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.luxury-card:hover {
+  border-color: rgba(201, 168, 76, 0.35);
+  box-shadow: 0 0 30px rgba(201, 168, 76, 0.07);
+}
+
+/* Gold divider */
+.gold-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+  opacity: 0.35;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0A0F1A;
+}
+::-webkit-scrollbar-thumb {
+  background: #1E2A3D;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C9A84C;
+}
+
+/* ══════════════════════════════════════════════════
+   Dashboard bright theme (Freelancer-style)
+   All overrides scoped to .dashboard-theme main
+   so the sidebar (aside) stays dark/untouched.
+   ══════════════════════════════════════════════════ */
+
+.dashboard-theme {
+  background-color: #f0ecf5;
+  color: #2d2d3d;
+}
+
+.dashboard-theme ::-webkit-scrollbar-track { background: #f0ecf5; }
+.dashboard-theme ::-webkit-scrollbar-thumb { background: #c9a8d8; }
+
+/* ── Cards ── */
+.dashboard-theme .luxury-card {
+  background: #ffffff;
+  border-color: #e2d8ed;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.dashboard-theme .luxury-card:hover {
+  border-color: #C9A84C;
+  box-shadow: 0 2px 8px rgba(102, 0, 153, 0.08);
+}
+
+/* ── Divider ── */
+.dashboard-theme .gold-divider {
+  background: linear-gradient(90deg, transparent, #9b6bb0, transparent);
+}
+
+/* ── Center content ── */
+.dashboard-theme main {
+  display: flex;
+  justify-content: center;
+}
+.dashboard-theme main > div {
+  width: 100%;
+  max-width: 900px;
+}
+
+/* ══════════════════════════════════════════════════
+   Content-area text color overrides (skip sidebar)
+   Map every dark-on-dark color → light-theme equivalent
+   ══════════════════════════════════════════════════ */
+
+/* Primary text: #EDE8DC (cream) → dark */
+.dashboard-theme main .text-\[\#EDE8DC\] { color: #1a1a2e !important; }
+
+/* Secondary text: #A09880 (muted tan) → medium dark */
+.dashboard-theme main .text-\[\#A09880\] { color: #5a5a6a !important; }
+
+/* Muted text: #6B82A0 (blue-grey) → medium */
+.dashboard-theme main .text-\[\#6B82A0\] { color: #5c6b7a !important; }
+
+/* Very muted: #3A4A5E → lighter muted */
+.dashboard-theme main .text-\[\#3A4A5E\] { color: #8a8a9a !important; }
+
+/* Darkest muted: #2A3A4E → light grey */
+.dashboard-theme main .text-\[\#2A3A4E\] { color: #9a9aaa !important; }
+
+/* Gold accent stays gold */
+.dashboard-theme main .text-\[\#C9A84C\] { color: #C9A84C !important; }
+
+/* ── Dark backgrounds → white/light ── */
+.dashboard-theme main .bg-\[\#0A0F1A\] { background-color: #ffffff !important; }
+.dashboard-theme main .bg-\[\#111827\] { background-color: #ffffff !important; }
+.dashboard-theme main .bg-\[\#0F1A2E\] { background-color: #f0ecf5 !important; }
+.dashboard-theme main .bg-\[\#0D0D0D\] { background-color: #ffffff !important; }
+.dashboard-theme main .bg-\[\#080D16\] { background-color: #f5f3f8 !important; }
+
+/* ── Dark borders → light purple/grey ── */
+.dashboard-theme main .border-\[\#1E2A3D\] { border-color: #e2d8ed !important; }
+.dashboard-theme main .border-\[\#2A3A4E\] { border-color: #d1c4e9 !important; }
+
+/* ── Placeholders ── */
+.dashboard-theme main .placeholder-\[\#3A4A5E\]::placeholder { color: #9e9e9e !important; }
+.dashboard-theme main .placeholder-\[\#3A3A3A\]::placeholder { color: #9e9e9e !important; }
+
+/* ── Form inputs (catch-all for any inline bg) ── */
+.dashboard-theme main input,
+.dashboard-theme main select,
+.dashboard-theme main textarea {
+  background-color: #ffffff !important;
+  border-color: #d1c4e9 !important;
+  color: #1a1a2e !important;
+}
+.dashboard-theme main input::placeholder,
+.dashboard-theme main textarea::placeholder {
+  color: #9e9e9e !important;
+}
+.dashboard-theme main input:focus,
+.dashboard-theme main select:focus,
+.dashboard-theme main textarea:focus {
+  border-color: #C9A84C !important;
+}
+
+/* ── Buttons ── */
+.dashboard-theme main .bg-\[\#C9A84C\] { background-color: #C9A84C !important; }
+.dashboard-theme main .text-\[\#0A0F1A\] { color: #0A0F1A !important; }
+.dashboard-theme main .text-\[\#0D0D0D\] { color: #0D0D0D !important; }
+
+/* ── Toggle switch backgrounds ── */
+.dashboard-theme main .bg-\[\#C9A84C\]\/5 { background-color: rgba(201, 168, 76, 0.08) !important; }
+
+/* ── Dashed empty slot borders ── */
+.dashboard-theme main .border-dashed { border-color: #d1c4e9 !important; }
+
+/* ── Red badge stays visible ── */
+.dashboard-theme main .bg-red-500 { background-color: #ef4444 !important; }
+
+/* ── Hover text overrides ── */
+.dashboard-theme main .hover\:text-\[\#EDE8DC\]:hover { color: #1a1a2e !important; }
+.dashboard-theme main .hover\:text-\[\#C9A84C\]:hover { color: #C9A84C !important; }
+.dashboard-theme main .hover\:border-\[\#2A3A4E\]:hover { border-color: #C9A84C !important; }
+.dashboard-theme main .hover\:border-\[\#C9A84C\]\/40:hover { border-color: #C9A84C !important; }
