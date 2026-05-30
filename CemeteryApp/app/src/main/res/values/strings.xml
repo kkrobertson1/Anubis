@@ -10,4 +10,8 @@
     <string name="destination">Destination</string>
     <string name="start_guidance">Start guidance</string>
     <string name="stop_guidance">Stop guidance</string>
+    <string name="location_disclosure_title">Location Permission Required</string>
+    <string name="location_disclosure_message">ANUBIS collects location data to enable turn-by-turn navigation to cemetery gravesites, including when the app is in the background or the device is locked. We use this data only to provide navigation and do not share it with advertisers or third parties for marketing purposes.\n\nOn the next screen, Android will ask you to grant location permission. Tap \"Allow\" to enable navigation.</string>
+    <string name="location_disclosure_agree">I Agree</string>
+    <string name="location_disclosure_cancel">Cancel</string>
 </resources>
