@@ -11,6 +11,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.IntentCompat
@@ -47,6 +48,24 @@ class NavFragmentActivity : AppCompatActivity() {
 
     private lateinit var navFragment: SupportNavigationFragment
     private lateinit var buttonToggleGuidance: Button
+
+    // Pre-registered at class init so it is available before STARTED.
+    // Activity Result Contracts forbid calling registerForActivityResult()
+    // from a later callback (e.g. a button click), so we store the launcher
+    // and the requested permissions array as members.
+    private var pendingPermissions: Array<String> = emptyArray()
+    private val permissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissionResults ->
+        if (permissionResults.getOrDefault(
+                Manifest.permission.ACCESS_FINE_LOCATION, false
+            )
+        ) {
+            onLocationPermissionGranted()
+        } else {
+            showPermissionSnackBar(window.decorView, pendingPermissions, true)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,13 +106,12 @@ class NavFragmentActivity : AppCompatActivity() {
         }
 
         if (permissions.any { !checkPermissionGranted(it) }) {
-
-            if (permissions.any { shouldShowRequestPermissionRationaleFix(it) }) {
-                // Display a dialogue explaining the required permissions.
-                showPermissionSnackBar(window.decorView, permissions, false)
-            }
-
-            fireRequestPermissionAction(window.decorView, permissions)
+            // Per Google Play's Prominent Disclosure and Consent Requirement,
+            // the user must be shown an in-app disclosure of what location data
+            // is collected and how it's used immediately before the runtime
+            // permission request. Only after explicit consent do we proceed
+            // with the system permission dialog.
+            showLocationDisclosureThenRequestPermissions(permissions)
         } else {
             window?.decorView?.postDelayed(
                 { onLocationPermissionGranted() }, TimeUnit.SECONDS.toMillis(2)
@@ -304,21 +322,27 @@ class NavFragmentActivity : AppCompatActivity() {
         navigateToDest()
     }
 
-    private fun fireRequestPermissionAction(view: View?, permissions: Array<String>) {
-        val permissionsLauncher = registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions(),
-            { permissionResults ->
-                if (permissionResults.getOrDefault(
-                        Manifest.permission.ACCESS_FINE_LOCATION, false
-                    )
-                ) {
-                    onLocationPermissionGranted()
-                } else {
-                    showPermissionSnackBar(view, permissions, true)
+    private fun showLocationDisclosureThenRequestPermissions(permissions: Array<String>) {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.location_disclosure_title)
+            .setMessage(R.string.location_disclosure_message)
+            .setCancelable(false)
+            .setPositiveButton(R.string.location_disclosure_agree) { dialog, _ ->
+                dialog.dismiss()
+                if (permissions.any { shouldShowRequestPermissionRationaleFix(it) }) {
+                    showPermissionSnackBar(window.decorView, permissions, false)
                 }
-            },
-        )
+                fireRequestPermissionAction(window.decorView, permissions)
+            }
+            .setNegativeButton(R.string.location_disclosure_cancel) { dialog, _ ->
+                dialog.dismiss()
+                finish()
+            }
+            .show()
+    }
 
+    private fun fireRequestPermissionAction(view: View?, permissions: Array<String>) {
+        pendingPermissions = permissions
         permissionsLauncher.launch(permissions)
     }
 
