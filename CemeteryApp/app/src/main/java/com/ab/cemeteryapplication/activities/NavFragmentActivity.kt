@@ -244,14 +244,21 @@ class NavFragmentActivity : AppCompatActivity() {
             arrivalListener = Navigator.ArrivalListener {
 
                 // Show an onscreen message
-                showToast("User has arrived at the destination!")
+                showToast("You have arrived. Walk to the marker and tap Stop Guidance to save your exact location.")
 
                 // Stop turn-by-turn guidance and return to TOP_DOWN perspective of the map
                 navigator.stopGuidance()
 
                 // Stop simulating vehicle movement.
                 navigator.simulator.unsetUserLocation()
-                finish()
+
+                // Intentionally do NOT call finish() here.
+                // The SDK's arrival threshold (~50 ft) is wider than the precision
+                // needed to save a gravesite GPS. Keeping the activity alive lets the
+                // user keep walking visually toward the pin on the map after guidance
+                // ends. They exit via the Stop Guidance button when physically at the
+                // marker, then tap Save to ANUBIS on the destination screen to capture
+                // their true position.
             }
             navigator.addArrivalListener(arrivalListener)
         }
