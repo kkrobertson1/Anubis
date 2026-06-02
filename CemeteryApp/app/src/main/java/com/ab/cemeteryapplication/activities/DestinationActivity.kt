@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.IntentCompat
 import com.ab.cemeteryapplication.R
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -72,8 +73,14 @@ class DestinationActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            // Request a FRESH GPS fix at the moment Save is tapped. lastLocation
+            // returns whatever cached value is left over from the navigation SDK,
+            // which would be the position when guidance ended (~50 ft from the
+            // marker) rather than the user's actual position at the gravesite
+            // after they walked the remaining distance.
+            Toast.makeText(this, "Getting your current location…", Toast.LENGTH_SHORT).show()
             val fusedClient = LocationServices.getFusedLocationProviderClient(this)
-            fusedClient.lastLocation
+            fusedClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener { location ->
                     if (location == null) {
                         Toast.makeText(
