@@ -318,7 +318,13 @@ class NavFragmentActivity : AppCompatActivity() {
     private fun handleShouldShowRequestPermissionRationaleFixFailure(permission: String) = true
 
     private fun onLocationPermissionGranted() {
-        navFragment.setForceNightMode(ForceNightMode.FORCE_NIGHT)
+        // Let the SDK auto-detect day/night based on actual location + local time.
+        // The pristine source forced FORCE_NIGHT (sample/demo code) which caused the
+        // map to start in night mode during daytime; the SDK then mid-navigation
+        // tried to correct to day mode and the transition produced a bug where
+        // navigation could not be resumed. AUTO is the SDK's documented default
+        // and recommended setting.
+        navFragment.setForceNightMode(ForceNightMode.AUTO)
         // Ensure the screen stays on during nav.
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
