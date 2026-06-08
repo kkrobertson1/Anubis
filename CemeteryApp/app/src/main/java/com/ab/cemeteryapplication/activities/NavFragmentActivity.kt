@@ -244,21 +244,14 @@ class NavFragmentActivity : AppCompatActivity() {
             arrivalListener = Navigator.ArrivalListener {
 
                 // Show an onscreen message
-                showToast("You have arrived. Walk to the marker and tap Stop Guidance to save your exact location.")
+                showToast("User has arrived at the destination!")
 
                 // Stop turn-by-turn guidance and return to TOP_DOWN perspective of the map
                 navigator.stopGuidance()
 
                 // Stop simulating vehicle movement.
                 navigator.simulator.unsetUserLocation()
-
-                // Intentionally do NOT call finish() here.
-                // The SDK's arrival threshold (~50 ft) is wider than the precision
-                // needed to save a gravesite GPS. Keeping the activity alive lets the
-                // user keep walking visually toward the pin on the map after guidance
-                // ends. They exit via the Stop Guidance button when physically at the
-                // marker, then tap Save to ANUBIS on the destination screen to capture
-                // their true position.
+                finish()
             }
             navigator.addArrivalListener(arrivalListener)
         }
@@ -269,25 +262,16 @@ class NavFragmentActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        // Clean up THIS session's state without destroying the Navigator singleton.
-        //
-        // The Google Navigation SDK's Navigator is documented as a singleton. Calling
-        // navigator.cleanup() releases its internal state, which sounds harmless until
-        // the user starts a second navigation session in the same app process: the
-        // next NavigationApi.getNavigator() call returns the same singleton in a
-        // broken state, and route calculation / guidance silently fail to start.
-        // This matches the "first try works, second try doesn't" symptom we hit.
-        //
-        // Per Google's "Best Practices for the Navigation SDK," cleanup() should be
-        // called only when navigation is truly no longer needed for the lifetime of
-        // the process, not on every activity destruction. We therefore omit the
-        // cleanup() call and rely on process termination for final teardown.
+        // If using the Simulator, make sure the user location is reset:
         withNavigatorAsync {
+            // Unregister event listeners to avoid memory leaks.
             arrivalListener?.let {
                 navigator.removeArrivalListener(it)
             }
+            navigator.simulator.unsetUserLocation()
             navigator.stopGuidance()
             navigator.clearDestinations()
+            navigator.cleanup()
         }
         super.onDestroy()
     }
