@@ -269,16 +269,25 @@ class NavFragmentActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        // If using the Simulator, make sure the user location is reset:
+        // Clean up THIS session's state without destroying the Navigator singleton.
+        //
+        // The Google Navigation SDK's Navigator is documented as a singleton. Calling
+        // navigator.cleanup() releases its internal state, which sounds harmless until
+        // the user starts a second navigation session in the same app process: the
+        // next NavigationApi.getNavigator() call returns the same singleton in a
+        // broken state, and route calculation / guidance silently fail to start.
+        // This matches the "first try works, second try doesn't" symptom we hit.
+        //
+        // Per Google's "Best Practices for the Navigation SDK," cleanup() should be
+        // called only when navigation is truly no longer needed for the lifetime of
+        // the process, not on every activity destruction. We therefore omit the
+        // cleanup() call and rely on process termination for final teardown.
         withNavigatorAsync {
-            // Unregister event listeners to avoid memory leaks.
             arrivalListener?.let {
                 navigator.removeArrivalListener(it)
             }
-            navigator.simulator.unsetUserLocation()
             navigator.stopGuidance()
             navigator.clearDestinations()
-            navigator.cleanup()
         }
         super.onDestroy()
     }
