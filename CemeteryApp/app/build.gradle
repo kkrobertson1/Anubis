@@ -14,8 +14,8 @@ android {
         applicationId "com.ab.cemeteryapplication"
         minSdkVersion 24
         targetSdkVersion 36
-        versionCode 32
-        versionName "1.1.7"
+        versionCode 33
+        versionName "1.1.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "en"
@@ -72,7 +72,7 @@ dependencies {
     //dots indicator
     implementation 'com.tbuonomo:dotsindicator:5.1.0'
 
-    api "com.google.android.libraries.navigation:navigation:7.3.0"
+    api "com.google.android.libraries.navigation:navigation:7.6.1"
     implementation "com.google.android.gms:play-services-maps:19.2.0"
     implementation 'com.google.android.gms:play-services-location:21.3.0'
 
