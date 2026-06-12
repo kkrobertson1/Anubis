@@ -254,7 +254,13 @@ class NavFragmentActivity : AppCompatActivity() {
                 if (!switchedToWalking && travelMode != RoutingOptions.TravelMode.WALKING) {
                     switchedToWalking = true
                     showToast("Road ends here. Switching to walking directions.")
-                    startWalkingLeg()
+                    // Defer the re-route by one frame so the SDK finishes
+                    // processing the arrival event before we replace the route.
+                    window.decorView.post {
+                        if (!isFinishing && !isDestroyed) {
+                            startWalkingLeg()
+                        }
+                    }
                 } else {
                     // Show an onscreen message
                     showToast("User has arrived at the destination!")
@@ -283,6 +289,12 @@ class NavFragmentActivity : AppCompatActivity() {
                 waypoint, RoutingOptions().travelMode(RoutingOptions.TravelMode.WALKING)
             )
             pendingRoute.setOnResultListener { code ->
+                // The user may have exited (Stop Guidance) while the walking
+                // route was being computed; the navigator is cleaned up in
+                // onDestroy, so do not touch it after that.
+                if (isFinishing || isDestroyed) {
+                    return@setOnResultListener
+                }
                 when (code) {
                     Navigator.RouteStatus.OK -> {
                         navigator.setAudioGuidance(Navigator.AudioGuidance.VOICE_ALERTS_AND_GUIDANCE)
