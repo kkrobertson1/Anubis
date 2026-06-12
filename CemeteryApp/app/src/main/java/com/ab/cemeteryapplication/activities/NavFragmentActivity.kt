@@ -43,6 +43,10 @@ class NavFragmentActivity : AppCompatActivity() {
     private var navigatorScope: InitializedNavScope? = null
     private var arrivalListener: Navigator.ArrivalListener? = null
 
+    // Set when a driving session has handed off to a walking session after the
+    // road ended, so the next arrival event ends navigation instead of looping.
+    private var switchedToWalking = false
+
     // TODO: Update to be lifecycle aware.
     private var pendingNavActions = mutableListOf<InitializedNavRunnable>()
 
@@ -242,18 +246,60 @@ class NavFragmentActivity : AppCompatActivity() {
     private fun registerNavigationListeners() {
         withNavigatorAsync {
             arrivalListener = Navigator.ArrivalListener {
+                // A driving route to a gravesite typically ends where the road ends,
+                // not at the gravesite itself. When the SDK fires arrival for a
+                // driving session, hand off to a walking session to cover the rest
+                // of the way instead of ending navigation. Walking arrivals (or a
+                // failed walking re-route) end the session as before.
+                if (!switchedToWalking && travelMode != RoutingOptions.TravelMode.WALKING) {
+                    switchedToWalking = true
+                    showToast("Road ends here. Switching to walking directions.")
+                    startWalkingLeg()
+                } else {
+                    // Show an onscreen message
+                    showToast("User has arrived at the destination!")
 
-                // Show an onscreen message
-                showToast("User has arrived at the destination!")
+                    // Stop turn-by-turn guidance and return to TOP_DOWN perspective of the map
+                    navigator.stopGuidance()
 
-                // Stop turn-by-turn guidance and return to TOP_DOWN perspective of the map
-                navigator.stopGuidance()
-
-                // Stop simulating vehicle movement.
-                navigator.simulator.unsetUserLocation()
-                finish()
+                    // Stop simulating vehicle movement.
+                    navigator.simulator.unsetUserLocation()
+                    finish()
+                }
             }
             navigator.addArrivalListener(arrivalListener)
+        }
+    }
+
+    /** Re-routes to the same destination in walking mode after the driving leg ends. */
+    private fun startWalkingLeg() {
+        val waypoint = Waypoint.builder().setVehicleStopover(false).setPreferSameSideOfRoad(false)
+            .setLatLng(dest.latitude, dest.longitude).build()
+
+        withNavigatorAsync {
+            navigator.stopGuidance()
+            navigator.clearDestinations()
+            val pendingRoute = navigator.setDestination(
+                waypoint, RoutingOptions().travelMode(RoutingOptions.TravelMode.WALKING)
+            )
+            pendingRoute.setOnResultListener { code ->
+                when (code) {
+                    Navigator.RouteStatus.OK -> {
+                        navigator.setAudioGuidance(Navigator.AudioGuidance.VOICE_ALERTS_AND_GUIDANCE)
+                        navigator.startGuidance()
+                    }
+
+                    else -> {
+                        // Could not compute a walking route (e.g. destination is
+                        // off the path network). Fall back to the original
+                        // end-of-session behavior.
+                        showToast("User has arrived at the destination!")
+                        navigator.stopGuidance()
+                        navigator.simulator.unsetUserLocation()
+                        finish()
+                    }
+                }
+            }
         }
     }
 
