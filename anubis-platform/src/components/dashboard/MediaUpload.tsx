@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
+import { upload } from "@vercel/blob/client";
 import { Upload, X, FileText, Trash2 } from "lucide-react";
 
 type MediaItem = {
@@ -30,56 +31,42 @@ export default function MediaUpload({ gravesiteId, initialMedia }: Props) {
     setError(null);
 
     try {
-      // 1. Get signed params from our server
-      const signRes = await fetch("/api/cloudinary/sign", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ gravesiteId }),
-      });
-      const { signature, timestamp, folder, cloudName, apiKey } = await signRes.json();
-
-      // 2. Upload directly to Cloudinary
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("signature", signature);
-      formData.append("timestamp", String(timestamp));
-      formData.append("api_key", apiKey);
-      formData.append("folder", folder);
-
-      const resourceType = mediaType === "photo" ? "image" : "raw";
-      const uploadRes = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
-        { method: "POST", body: formData }
+      // 1. Upload directly to Vercel Blob. The /api/blob/upload route
+      // authenticates the user and hands back a short-lived client token.
+      const blob = await upload(
+        `anubis/gravesites/${gravesiteId}/${file.name}`,
+        file,
+        {
+          access: "public",
+          handleUploadUrl: "/api/blob/upload",
+          contentType: file.type,
+        }
       );
-      const uploaded = await uploadRes.json();
 
-      if (!uploaded.secure_url) {
-        throw new Error(uploaded.error?.message ?? "Upload failed");
-      }
-
-      // 3. Save to DB
+      // 2. Save to DB. The blob URL doubles as the deletion handle, so we
+      // store it in public_id as well.
       const saveRes = await fetch(`/api/gravesite/${gravesiteId}/media`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          url: uploaded.secure_url,
-          publicId: uploaded.public_id,
+          url: blob.url,
+          publicId: blob.url,
           mediaType,
         }),
       });
       const saved = await saveRes.json();
       if (!saved.success) throw new Error(saved.error ?? "Failed to save");
 
-      // 4. Optimistically update UI
+      // 3. Optimistically update UI
       setMedia((prev) => [
         ...prev,
         {
-          id: uploaded.public_id,
-          url: uploaded.secure_url,
+          id: blob.url,
+          url: blob.url,
           media_type: mediaType,
           caption: null,
           created_at: new Date().toISOString(),
-          public_id: uploaded.public_id,
+          public_id: blob.url,
         },
       ]);
     } catch (err) {

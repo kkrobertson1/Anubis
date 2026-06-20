@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { v2 as cloudinary } from "cloudinary";
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+import { del } from "@vercel/blob";
 
 // Save uploaded media URL to DB
 export async function POST(
@@ -37,7 +31,7 @@ export async function POST(
   return NextResponse.json({ success: true });
 }
 
-// Delete media from DB and Cloudinary
+// Delete media from DB and Vercel Blob
 export async function DELETE(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -63,10 +57,11 @@ export async function DELETE(
 
   await supabase.from("gravesite_media").delete().eq("id", mediaId);
 
-  // Remove from Cloudinary if we have the public_id
+  // Remove the underlying file from Vercel Blob. publicId holds the blob URL,
+  // which is what del() expects.
   if (publicId) {
     try {
-      await cloudinary.uploader.destroy(publicId);
+      await del(publicId);
     } catch {
       // Non-fatal — DB record is already removed
     }

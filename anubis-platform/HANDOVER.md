@@ -16,7 +16,7 @@ anubiskemet2@gmail.com.
 | Vercel | Hosting and deployments | anubiskemet2@gmail.com (after invite) |
 | Supabase | Database, auth, storage | anubiskemet2@gmail.com (after invite) |
 | GitHub | Source code | kkrobertson1 (this repo) |
-| Cloudinary | Media (image/video) hosting | du31h170u (cloud name) |
+| Vercel Blob | Media (image/document) hosting | part of the Vercel project |
 | Resend | Transactional email | account tied to API key |
 | PayPal | Payment processing (live) | RR&W business account |
 | Helcim | Payment processing (live) | merchant 324363 |
@@ -75,10 +75,8 @@ PAYPAL_MERCHANT_ID=5XDB9DEWWPVJU
 GOOGLE_CLIENT_ID=<from Google Cloud Console -> APIs and Services -> Credentials>
 GOOGLE_CLIENT_SECRET=<from Google Cloud Console>
 
-# Cloudinary
-CLOUDINARY_CLOUD_NAME=du31h170u
-CLOUDINARY_API_KEY=<from Cloudinary dashboard>
-CLOUDINARY_API_SECRET=<from Cloudinary dashboard>
+# Vercel Blob (auto-created when the Blob store is added to the project)
+BLOB_READ_WRITE_TOKEN=<from Vercel project -> Storage -> Blob store>
 
 # Google AdSense
 NEXT_PUBLIC_ADSENSE_SLOT_HOME=<ad unit slot ID>
@@ -135,7 +133,7 @@ anubis-platform/
 
 ### API Routes (`src/app/api/`)
 
-- `cloudinary/sign` - Signed upload URLs for media
+- `blob/upload` - Client-upload tokens for Vercel Blob media uploads
 - `gravesite/[id]` - GET/PATCH/DELETE memorial
 - `gravesite/[id]/media` - POST/DELETE media attachments
 - `notifications/email` - Trigger email via Resend
@@ -174,8 +172,9 @@ RLS is enabled on every table. Policies are defined in `supabase/schema.sql`:
 
 ### Storage Buckets
 
-Media is stored on **Cloudinary**, not Supabase Storage. Supabase Storage is
-not currently used.
+Media is stored on **Vercel Blob**, not Supabase Storage. Supabase Storage is
+not currently used. (Images uploaded before the migration still live on
+Cloudinary and continue to render; only new uploads go to Vercel Blob.)
 
 ### Migrations
 
@@ -238,12 +237,16 @@ If you ever change hosting providers, update these records in the registrar.
 - Used as secondary payment processor
 - HelcimPay.js modal embedded on `/checkout` and `/dashboard/upgrade`
 
-### Cloudinary
+### Vercel Blob
 
-- Cloud name: `du31h170u`
-- Folder structure: `anubis/gravesites/<gravesite_id>/`
-- Signed uploads via `/api/cloudinary/sign`
-- Free tier currently sufficient
+- Part of the Vercel project (Storage tab); `BLOB_READ_WRITE_TOKEN` is
+  auto-created when the Blob store is connected
+- Path structure: `anubis/gravesites/<gravesite_id>/`
+- Direct client uploads via `/api/blob/upload` (token route, Supabase-auth
+  gated), which bypasses Vercel's 4.5MB serverless body limit
+- Deletes use `del()` from `@vercel/blob`; the stored public URL is the key
+- Legacy images uploaded before the migration remain on Cloudinary and still
+  render (`res.cloudinary.com` is kept in `next.config.ts` remote patterns)
 
 ### Resend
 

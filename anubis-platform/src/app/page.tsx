@@ -163,16 +163,48 @@ export default async function HomePage() {
           </div>
           <div className="relative w-full aspect-video border border-[#1E2A3D]">
             <iframe
-              src="https://www.youtube.com/embed/VIDEO_ID_HERE"
+              src="https://www.youtube.com/embed/Owev5-ab4z8"
               title="How the ANUBIS App Works"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               className="absolute inset-0 w-full h-full"
             />
           </div>
-          <p className="text-xs text-[#3A4A5E] text-center mt-4">
-            Available on Android and iOS
-          </p>
+
+          {/* App store links */}
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="https://apps.apple.com/app/id6764701969"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-6 py-3 border border-[#C9A84C]/40 hover:border-[#C9A84C] hover:bg-[#C9A84C]/5 transition-colors duration-300 min-w-[210px]"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7 text-[#EDE8DC]">
+                <path d="M17.05 12.04c-.03-2.6 2.12-3.85 2.22-3.91-1.21-1.77-3.09-2.01-3.76-2.04-1.6-.16-3.12.94-3.93.94-.81 0-2.06-.92-3.39-.89-1.74.03-3.35 1.01-4.25 2.57-1.81 3.14-.46 7.79 1.3 10.34.86 1.25 1.89 2.65 3.23 2.6 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.39.81 1.4-.02 2.29-1.27 3.14-2.53.99-1.45 1.4-2.86 1.42-2.93-.03-.01-2.72-1.04-2.75-4.13zM14.53 4.5c.72-.87 1.2-2.08 1.07-3.28-1.03.04-2.28.69-3.02 1.56-.66.77-1.24 2-1.09 3.18 1.15.09 2.32-.59 3.04-1.46z" />
+              </svg>
+              <div className="text-left">
+                <p className="text-[10px] text-[#A09880] uppercase tracking-wider leading-none">Download on the</p>
+                <p className="text-base text-[#EDE8DC] font-medium leading-tight">App Store</p>
+              </div>
+            </a>
+            <a
+              href="https://play.google.com/store/apps/details?id=com.ab.cemeteryapplication"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 px-6 py-3 border border-[#C9A84C]/40 hover:border-[#C9A84C] hover:bg-[#C9A84C]/5 transition-colors duration-300 min-w-[210px]"
+            >
+              <svg viewBox="0 0 24 24" className="w-7 h-7">
+                <path fill="#EA4335" d="M3.6 1.8c-.3.3-.5.8-.5 1.4v17.6c0 .6.2 1.1.5 1.4l.1.1L13.5 12.4v-.2L3.7 1.7l-.1.1z" transform="translate(0)" />
+                <path fill="#FBBC04" d="M16.8 15.7l-3.3-3.3v-.2l3.3-3.3.1.1 3.9 2.2c1.1.6 1.1 1.7 0 2.3l-3.9 2.2-.1.1z" />
+                <path fill="#34A853" d="M16.9 15.6L13.5 12.2 3.6 22.2c.4.4 1 .4 1.7.1l11.6-6.7z" />
+                <path fill="#4285F4" d="M16.9 8.8L5.3 2.1c-.7-.4-1.3-.3-1.7.1l9.9 9.9 3.4-3.3z" />
+              </svg>
+              <div className="text-left">
+                <p className="text-[10px] text-[#A09880] uppercase tracking-wider leading-none">Get it on</p>
+                <p className="text-base text-[#EDE8DC] font-medium leading-tight">Google Play</p>
+              </div>
+            </a>
+          </div>
         </div>
       </section>
 

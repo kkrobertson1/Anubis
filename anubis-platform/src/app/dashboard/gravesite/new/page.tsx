@@ -4,6 +4,7 @@ import { useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { createGravesite } from "@/app/actions/gravesite";
+import { upload } from "@vercel/blob/client";
 import { ArrowLeft, MapPin, Upload, X } from "lucide-react";
 import { US_STATES, SLOT_CATEGORIES } from "@/lib/constants";
 
@@ -14,34 +15,24 @@ async function uploadFile(
   mediaType: string,
   gravesiteId: string
 ): Promise<void> {
-  const signRes = await fetch("/api/cloudinary/sign", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ gravesiteId }),
-  });
-  const { signature, timestamp, folder, cloudName, apiKey } = await signRes.json();
-
-  const form = new FormData();
-  form.append("file", file);
-  form.append("signature", signature);
-  form.append("timestamp", String(timestamp));
-  form.append("api_key", apiKey);
-  form.append("folder", folder);
-
-  const resourceType = mediaType === "photo" ? "image" : "raw";
-  const uploadRes = await fetch(
-    `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
-    { method: "POST", body: form }
+  // Upload directly to Vercel Blob; /api/blob/upload authenticates and
+  // returns a short-lived client token.
+  const blob = await upload(
+    `anubis/gravesites/${gravesiteId}/${file.name}`,
+    file,
+    {
+      access: "public",
+      handleUploadUrl: "/api/blob/upload",
+      contentType: file.type,
+    }
   );
-  const uploaded = await uploadRes.json();
-  if (!uploaded.secure_url) throw new Error(uploaded.error?.message ?? "Upload failed");
 
   await fetch(`/api/gravesite/${gravesiteId}/media`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      url: uploaded.secure_url,
-      publicId: uploaded.public_id,
+      url: blob.url,
+      publicId: blob.url,
       mediaType,
     }),
   });
